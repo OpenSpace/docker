@@ -16,7 +16,7 @@ RUN chmod 0440 /etc/sudoers.d/openspace && \
     chown openspace:openspace -R .
 RUN apt update && \
     export DEBIAN_FRONTEND=noninteractive && \
-    apt-get install -y tzdata && \
+    apt install -y tzdata && \
     ln -fs /usr/share/zoneinfo/America/Denver /etc/localtime && \
     dpkg-reconfigure --frontend noninteractive tzdata
 RUN apt update && \

@@ -17,14 +17,18 @@ RUN apt install -y build-essential
 RUN apt install -y git
 
 
-## Install GCC 13 and enable
-RUN apt install -y software-properties-common
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test
-RUN apt update
+## Build GCC 14 and enable
+RUN apt install -y libmpfr-dev libgmp3-dev libmpc-dev
+RUN wget http://ftp.gnu.org/gnu/gcc/gcc-14.3.0/gcc-14.3.0.tar.gz
+RUN tar -xf gcc-14.3.0.tar.gz
+WORKDIR "/gcc-14.3.0"
+RUN ./configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-14.3.0 --enable-languages=c,c++ --disable-multilib --program-suffix=-14.3.0
+RUN make -j4
 
-RUN apt install -y gcc-13 g++-13
+WORKDIR "/"
+
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 120 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/local/gcc-14.3.0/bin/gcc-14.3.0 120 --slave /usr/bin/g++ g++ /usr/local/gcc-14.3.0/bin/g++-14.3.0 --slave /usr/bin/gcov gcov /usr/local/gcc-14.3.0/bin/gcov-14.3.0 gcov
 
 
 # Install the remaining OpenSpace dependencies

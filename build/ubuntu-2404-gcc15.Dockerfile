@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt update
 
@@ -17,14 +17,21 @@ RUN apt install -y build-essential
 RUN apt install -y git
 
 
-## Install GCC 13 and enable
-RUN apt install -y software-properties-common
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test
-RUN apt update
+## Build GCC 15 and enable
+RUN apt install -y libmpfr-dev libgmp3-dev libmpc-dev
+RUN wget http://ftp.gnu.org/gnu/gcc/gcc-15.1.0/gcc-15.1.0.tar.gz
+RUN tar -xf gcc-15.1.0.tar.gz
+WORKDIR "/gcc-15.1.0"
+RUN ./configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-15.1.0 --enable-checking=release --enable-languages=c,c++ --disable-multilib --program-suffix=-15.1.0
+RUN make -j4
 
-RUN apt install -y gcc-13 g++-13
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 120 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/local/gcc-15.1.0/bin/gcc-15.1.0 120 --slave /usr/bin/g++ g++ /usr/local/gcc-15.1.0/bin/g++-15.1.0 --slave /usr/bin/gcov gcov /usr/local/gcc-15.1.0/bin/gcov-15.1.0 gcov
+
+WORKDIR "/"
+
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 110 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 120 --slave /usr/bin/g++ g++ /usr/bin/g++-15 --slave /usr/bin/gcov gcov /usr/bin/gcov-15
 
 
 # Install the remaining OpenSpace dependencies

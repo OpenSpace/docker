@@ -3,5 +3,5 @@ REM Build all containers in this folder. The tag is "openspace-" followed by the
 REM the Dockerfile without the file extension
 for %%f in (*.Dockerfile) do (
   echo "Building %%f"
-  docker build --tag openspace-%%~nf --file %%f .
+  start "" docker build --tag openspace-%%~nf --file %%f .
 )

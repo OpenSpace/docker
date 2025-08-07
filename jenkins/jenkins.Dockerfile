@@ -1,12 +1,12 @@
 ARG IMAGE
 FROM ${IMAGE}
 
-RUN apt-get install -y openjdk-17-jre
+RUN apt install -y openjdk-17-jre
 RUN wget https://dev.openspaceproject.com/jnlpJars/agent.jar -q -O /agent.jar
 RUN mkdir /var/jenkins
 
 # Our Jenkins tries to build everything with make and with ninja, so we need to install it
-RUN apt-get install -y ninja-build
+RUN apt install -y ninja-build
 
 # We have to go this roundabout way as we cannot use ARG inside an ENTRYPOINT
 ARG COMPUTER_NAME

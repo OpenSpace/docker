@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt update
 
@@ -15,16 +15,32 @@ RUN ln -s /opt/cmake/bin/* /usr/local/bin
 # Set up the compiler
 RUN apt install -y build-essential
 RUN apt install -y git
-
-
-## Install GCC 13 and enable
 RUN apt install -y software-properties-common
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN apt install -y gnupg
+RUN apt install -y apt-transport-https
+RUN apt install -y ca-certificates
+ADD data/llvm-ubuntu-2404.list /etc/apt/sources.list.d/
+ADD data/llvm-snapshot.gpg.key.gpg /etc/apt/trusted.gpg.d/
+RUN mv /etc/apt/sources.list.d/llvm-ubuntu-2404.list /etc/apt/sources.list.d/llvm.list
 RUN apt update
+RUN apt install -y clang-19
+RUN apt install -y clang-tools-19
+RUN apt install -y clang-format-19
+RUN apt install -y libfuzzer-19-dev
+RUN apt install -y lldb-19
+RUN apt install -y lld-19
+RUN apt install -y libc++-19-dev
+RUN apt install -y libc++abi-19-dev
+RUN apt install -y libomp-19-dev
+RUN apt install -y libunwind-19-dev
+RUN apt install -y libpolly-19-dev
+RUN apt install -y libclc-19-dev
 
-RUN apt install -y gcc-13 g++-13
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 120 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN ln -s /usr/bin/clang++-19 /usr/bin/clang++
+RUN ln -s /usr/bin/clang-19 /usr/bin/clang
+
+ENV CC=/usr/bin/clang
+ENV CXX=/usr/bin/clang++
 
 
 # Install the remaining OpenSpace dependencies

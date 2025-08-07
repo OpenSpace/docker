@@ -14,17 +14,38 @@ RUN ln -s /opt/cmake/bin/* /usr/local/bin
 
 # Set up the compiler
 RUN apt install -y build-essential
-RUN apt install -y git
-
-
-## Install GCC 13 and enable
 RUN apt install -y software-properties-common
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN apt update
+RUN apt install -y libstdc++6
+RUN apt install -y libstdc++-13-dev
 
-RUN apt install -y gcc-13 g++-13
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 120 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN apt install -y git
+RUN apt install -y gnupg
+RUN apt install -y apt-transport-https
+RUN apt install -y ca-certificates
+ADD data/llvm-ubuntu-2204.list /etc/apt/sources.list.d/
+ADD data/llvm-snapshot.gpg.key.gpg /etc/apt/trusted.gpg.d/
+RUN mv /etc/apt/sources.list.d/llvm-ubuntu-2204.list /etc/apt/sources.list.d/llvm.list
+RUN apt update
+RUN apt install -y clang-18
+RUN apt install -y clang-tools-18
+RUN apt install -y clang-format-18
+RUN apt install -y libfuzzer-18-dev
+RUN apt install -y lldb-18
+RUN apt install -y lld-18
+RUN apt install -y libc++-18-dev
+RUN apt install -y libc++abi-18-dev
+RUN apt install -y libomp-18-dev
+RUN apt install -y libunwind-18-dev
+RUN apt install -y libpolly-18-dev
+RUN apt install -y libclc-18-dev
+
+RUN ln -s /usr/bin/clang++-18 /usr/bin/clang++
+RUN ln -s /usr/bin/clang-18 /usr/bin/clang
+
+ENV CC=/usr/bin/clang
+ENV CXX=/usr/bin/clang++
 
 
 # Install the remaining OpenSpace dependencies

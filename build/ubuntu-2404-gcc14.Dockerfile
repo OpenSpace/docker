@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt update
 
@@ -17,14 +17,14 @@ RUN apt install -y build-essential
 RUN apt install -y git
 
 
-## Install GCC 13 and enable
+## Install GCC 14 and enable
 RUN apt install -y software-properties-common
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN add-apt-repository ppa:ubuntu-toolchain-r/ppa
 RUN apt update
 
-RUN apt install -y gcc-13 g++-13
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 120 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN apt install -y gcc-14 g++-14
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 110 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 120 --slave /usr/bin/g++ g++ /usr/bin/g++-14 --slave /usr/bin/gcov gcov /usr/bin/gcov-14
 
 
 # Install the remaining OpenSpace dependencies
