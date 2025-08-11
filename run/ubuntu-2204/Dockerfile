@@ -60,17 +60,15 @@ RUN apt install -y gcc-11 g++-11 && \
     apt install -y libpng-dev && \
     apt install -y libcurl4-openssl-dev
 #Install latest version of CMake (ubuntu's default is too old)
-RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
-RUN apt update -y && \
-    apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main" && \
-    apt update -y && \
-    rm /usr/share/keyrings/kitware-archive-keyring.gpg && \
-    apt install -y kitware-archive-keyring
-RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy-rc main' | sudo tee -a /etc/apt/sources.list.d/kitware.list >/dev/null
-RUN apt update -y
-RUN apt install -y cmake && \
-    apt install -y cmake-curses-gui
+#cmake < 4.0 is known to work
+#Install CMake 3.26.4 from source
+RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.26.4/cmake-3.26.4.tar.gz && \
+              tar -xf cmake-3.26.4.tar.gz && \
+              cd cmake-3.26.4 && \
+              ./bootstrap -- -DCMAKE_USE_OPENSSL=ON && \
+              make -j\$(nproc) && \
+              make install && \
+              cd .. && rm -rf cmake-3.26.4*
 #Build OpenSpace
 RUN su openspace; \
     chown -R openspace:openspace .; \
