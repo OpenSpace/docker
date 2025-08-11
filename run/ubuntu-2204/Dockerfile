@@ -66,7 +66,7 @@ RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.26.4/cmake-3.2
               tar -xf cmake-3.26.4.tar.gz && \
               cd cmake-3.26.4 && \
               ./bootstrap -- -DCMAKE_USE_OPENSSL=ON && \
-              make -j\$(nproc) && \
+              make -j4 && \
               make install && \
               cd .. && rm -rf cmake-3.26.4*
 #Build OpenSpace
