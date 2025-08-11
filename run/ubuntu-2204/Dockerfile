@@ -53,8 +53,8 @@ RUN echo "user ALL=(ALL) ALL" >> /etc/sudoers && \
     apt install -y software-properties-common && \
     add-apt-repository ppa:ubuntu-toolchain-r/test && \
     apt update -y
-RUN apt install -y gcc-11 g++-11 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11 && \
+RUN apt install -y gcc-13 g++-13 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 60 --slave /usr/bin/g++ g++ /usr/bin/g++-13 && \
     update-alternatives --config gcc && \
     apt install -y glew-utils && \
     apt install -y libpng-dev && \
@@ -78,8 +78,8 @@ RUN su openspace; \
     mkdir /home/openspace/source/OpenSpace/build; \
     cd /home/openspace/source/OpenSpace/build; \
     cmake -DCMAKE_BUILD_TYPE:STRING="Release" \
-    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-11 \
-    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc-11 \
+    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-13 \
+    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc-13 \
     -DASSIMP_BUILD_MINIZIP=1 /home/openspace/source/OpenSpace; \
     make -j4
 
