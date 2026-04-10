@@ -27,8 +27,8 @@ RUN make -j4
 
 WORKDIR "/"
 
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/local/gcc-14.3.0/bin/gcc-14.3.0 120 --slave /usr/bin/g++ g++ /usr/local/gcc-14.3.0/bin/g++-14.3.0 --slave /usr/bin/gcov gcov /usr/local/gcc-14.3.0/bin/gcov-14.3.0 gcov
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/local/gcc-14.3.0/bin/gcc-14.3.0 120 --slave /usr/bin/g++ g++ /usr/local/gcc-14.3.0/bin/g++-14.3.0
 
 
 # Install the remaining OpenSpace dependencies

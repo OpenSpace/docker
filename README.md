@@ -5,8 +5,8 @@ The files are separated into subfolders that make clear what the files are used 
 
 The rest of this document explains how to install Docker and then how to use each of the folders and what they contain. The general gist is that a Docker container is like a virtual machine, but a lot easier (and faster) to setup. One important difference is that a Docker container will (in general) forget everything that you have done to it in an interactive session. This is great for reproducibility, but can be daunting to get on the ground running.
 
-## Installation
 
+## Installation
 > [!NOTE]
 >
 > Ensure that virtualization is enabled on your computer. Some computers don't have this enabled and require entering the BIOS of the computer.
@@ -65,14 +65,8 @@ To install with `brew`: run `brew install docker`.
 
 Both install methods will install Docker Desktop.
 
-### Linux
-You can install Docker either via your package manager or through Docker themselves. There is a Docker Desktop application you can use to help develop with Docker on Linux as well. More information can be found [here](https://docs.docker.com/engine/install/).
-
-### macOS
-You can install Docker Desktop by going [here](https://docs.docker.com/get-docker/) to install Docker Desktop. This will install the Docker Desktop application and the necessary CLI for Docker.
 
 ## Getting started
-
 Please note that this is just a quick and dirty getting started guide. For all commands refer to [documentation](https://docs.docker.com/) for more information. The general workflow for Docker is that we _build_ an **image** from a **Dockerfile**, and then _run_ an **image** as a **container**.
 
 To build a Docker image, on the commandline call: `docker build --tag {tag} --file {file}`. Where `{tag}` is the new name of the image that is to be built and the `{file}` is the Dockerfile that contains the instructions how to build it.
@@ -105,6 +99,7 @@ Specifically for containers that are going to be reused, it can be useful to giv
 >
 > The example commands here are meant to be executed from the same folder in which the Dockerfile is located. Running the commands in a different location will output errors.
 
+
 ## `build`
 The Dockerfiles in this folder create build environments that install all dependencies necessary to compile OpenSpace.
 
@@ -114,20 +109,23 @@ The other `build/build-all.sh` does the same as the Windows batch script for Lin
 
 The `build.sh` script can take one optional argument, which is the branch that should be built. If the parameter is left out, the `master` branch is built instead.
 
+
 ## `jenkins`
 The Dockerfiles in this folder contain Dockerfile instructions to use any other image as a Jenkins build node for the [dev.openspaceproject.com](dev.openspaceproject.com) page.
 
 Currently, there is only a single Dockerfile, that can be used to Jenkins-ify any of the Docker images defined in the build folder.
 
 This image is different in two regards:
+
 1. It takes arguments at image build time, and
-2. It runs automatically and does not need to be called interactively
+1. It runs automatically and does not need to be called interactively
 
 To build the Jenkins docker, follow the following steps:
+
 1. Build one of the images from the `build` folder
    - for example "ubuntu-2204-clang14.Dockerfile" through `docker build --tag openspace-ubuntu-2204-clang14 --file ubuntu-2204-clang14.Dockerfile .`
    - The specific `tag` name is arbitrary
-2. Build the Jenkins image, which requires three arguments to the build:
+1. Build the Jenkins image, which requires three arguments to the build:
    - `IMAGE`
      - The `tag` of the image that should be used as the basis for the Jenkins machine
    - `COMPUTER_NAME`
@@ -137,7 +135,7 @@ To build the Jenkins docker, follow the following steps:
      - **Never commit this secret to any GitHub repository or share it with anyone outside of the organization**
    - Build the Jenkins image and provide the arguments: `docker build --tag jenkins-openspace-ubuntu-2204-clang14 --file jenkins.Dockerfile --build-arg IMAGE=openspace-ubuntu-2204-clang14 --build-arg COMPUTER_NAME=linux-clang-1 --build-arg SECRET=mysecret .`
      - The `tag`, again, is arbitrary, but it makes sense to use something that is related to the tag specified in `IMAGE`
-3. Run the Docker image in a container.
+1. Run the Docker image in a container.
 
 > [!NOTE]
 >
@@ -147,8 +145,8 @@ To build the Jenkins docker, follow the following steps:
 >
 > If this is installed permanently on a machine also consider adding `--restart always` to make sure that the container is always running and give it a `--name {name}` at the same time so that the container is recognizable and `--detach` so that it does not attach to the current commandline window.
 
-## `tools`
 
+## `tools`
 > [!IMPORTANT]
 >
 > These Dockerfiles all require the `build/build-all.bat` or `build/build-all.sh` to have been executed as they rely on the images created by it.
@@ -156,5 +154,5 @@ To build the Jenkins docker, follow the following steps:
 The Dockerfiles in this folder setup an environment to use various useful tools easily, for example `clang-tidy` or static code analyzers. To build any of the docker images, follow the following steps:
 
 1. Build all the images in the build folder by using the `build/build-all.bat` scripts
-2. Build the tool image you want to use: `docker build --tag tool-openspace-clang_tidy --file clang_tidy.Dockerfile ..` The specific tag is arbitrary
-3. Run the Docker image in a container: `docker run  --tty --interactive tool-openspace-clang_tidy`.
+1. Build the tool image you want to use: `docker build --tag tool-openspace-clang_tidy --file clang_tidy.Dockerfile ..` The specific tag is arbitrary
+1. Run the Docker image in a container: `docker run  --tty --interactive tool-openspace-clang_tidy`.
