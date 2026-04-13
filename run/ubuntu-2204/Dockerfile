@@ -53,24 +53,22 @@ RUN echo "user ALL=(ALL) ALL" >> /etc/sudoers && \
     apt install -y software-properties-common && \
     add-apt-repository ppa:ubuntu-toolchain-r/test && \
     apt update -y
-RUN apt install -y gcc-11 g++-11 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11 && \
+RUN apt install -y gcc-13 g++-13 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 60 --slave /usr/bin/g++ g++ /usr/bin/g++-13 && \
     update-alternatives --config gcc && \
     apt install -y glew-utils && \
     apt install -y libpng-dev && \
     apt install -y libcurl4-openssl-dev
 #Install latest version of CMake (ubuntu's default is too old)
-RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
-RUN apt update -y && \
-    apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main" && \
-    apt update -y && \
-    rm /usr/share/keyrings/kitware-archive-keyring.gpg && \
-    apt install -y kitware-archive-keyring
-RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy-rc main' | sudo tee -a /etc/apt/sources.list.d/kitware.list >/dev/null
-RUN apt update -y
-RUN apt install -y cmake && \
-    apt install -y cmake-curses-gui
+#cmake < 4.0 is known to work
+#Install CMake 3.26.4 from source
+RUN wget -q https://github.com/Kitware/CMake/releases/download/v3.26.4/cmake-3.26.4.tar.gz && \
+              tar -xf cmake-3.26.4.tar.gz && \
+              cd cmake-3.26.4 && \
+              ./bootstrap -- -DCMAKE_USE_OPENSSL=ON && \
+              make -j4 && \
+              make install && \
+              cd .. && rm -rf cmake-3.26.4*
 #Build OpenSpace
 RUN su openspace; \
     chown -R openspace:openspace .; \
@@ -80,8 +78,8 @@ RUN su openspace; \
     mkdir /home/openspace/source/OpenSpace/build; \
     cd /home/openspace/source/OpenSpace/build; \
     cmake -DCMAKE_BUILD_TYPE:STRING="Release" \
-    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-11 \
-    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc-11 \
+    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-13 \
+    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc-13 \
     -DASSIMP_BUILD_MINIZIP=1 /home/openspace/source/OpenSpace; \
     make -j4
 
