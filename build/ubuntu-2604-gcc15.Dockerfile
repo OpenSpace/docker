@@ -1,29 +1,14 @@
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 RUN apt update
-
-
-# Get a supported version for CMake and install
-RUN apt install -y wget
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.25.0/cmake-3.25.0-linux-x86_64.sh -q -O /tmp/cmake-install.sh
-RUN chmod u+x /tmp/cmake-install.sh
-RUN mkdir /opt/cmake
-RUN /tmp/cmake-install.sh --skip-license --prefix=/opt/cmake
-RUN ln -s /opt/cmake/bin/* /usr/local/bin
 
 
 # Set up the compiler
+RUN apt install -y cmake
 RUN apt install -y build-essential
 RUN apt install -y git
 
-
-## Install GCC 13 and enable
-RUN apt install -y software-properties-common
-RUN add-apt-repository ppa:ubuntu-toolchain-r/ppa
-RUN apt update
-
-RUN apt install -y gcc-13 g++-13
-
+WORKDIR "/"
 
 # Install the remaining OpenSpace dependencies
 RUN apt install -y freeglut3-dev
@@ -37,7 +22,6 @@ RUN apt install -y libgdal-dev
 RUN apt install -y qt6-base-dev
 RUN apt install -y libmpv-dev
 RUN apt install -y libvulkan-dev
-
 
 # Install dependencies for running unit tests
 RUN apt install -y xvfb
