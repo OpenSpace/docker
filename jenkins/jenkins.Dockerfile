@@ -1,6 +1,7 @@
 ARG IMAGE
 FROM ${IMAGE}
 
+RUN apt install -y wget
 RUN apt install -y openjdk-17-jre
 RUN wget https://dev.openspaceproject.com/jnlpJars/agent.jar -q -O /agent.jar
 RUN mkdir /var/jenkins
