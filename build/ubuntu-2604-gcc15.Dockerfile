@@ -8,6 +8,11 @@ RUN apt install -y cmake
 RUN apt install -y build-essential
 RUN apt install -y git
 
+# Set up vcpkg
+RUN apt install -y curl
+RUN apt install -y zip
+RUN apt install -y unzip
+
 WORKDIR "/"
 
 # Install the remaining OpenSpace dependencies

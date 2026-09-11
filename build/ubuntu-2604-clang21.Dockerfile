@@ -7,6 +7,11 @@ RUN apt install -y cmake
 RUN apt install -y build-essential
 RUN apt install -y git
 
+# Set up vcpkg
+RUN apt install -y curl
+RUN apt install -y zip
+RUN apt install -y unzip
+
 # Set up Clang21
 RUN apt install -y clang-21
 RUN apt install -y clang-tools-21
