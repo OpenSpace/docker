@@ -11,6 +11,10 @@ RUN apt install -y git
 RUN apt install -y curl
 RUN apt install -y zip
 RUN apt install -y unzip
+RUN apt install -y autoconf
+RUN apt install -y autoconf-archive
+RUN apt install -y automake
+RUN apt install -y libtool
 
 # Set up Clang21
 RUN apt install -y clang-21

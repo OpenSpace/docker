@@ -2,7 +2,6 @@ FROM ubuntu:26.04
 
 RUN apt update
 
-
 # Set up the compiler
 RUN apt install -y cmake
 RUN apt install -y build-essential
@@ -12,6 +11,10 @@ RUN apt install -y git
 RUN apt install -y curl
 RUN apt install -y zip
 RUN apt install -y unzip
+RUN apt install -y autoconf
+RUN apt install -y autoconf-archive
+RUN apt install -y automake
+RUN apt install -y libtool
 
 WORKDIR "/"
 
