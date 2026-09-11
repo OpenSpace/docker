@@ -50,3 +50,13 @@ RUN apt install -y xvfb
 # Setting up the enviroment so that we can quickly build OpenSpace from the container
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY data/build.sh /
+
+
+# Prepare vcpkg
+WORKDIR /vcpkg
+RUN git clone https://github.com/microsoft/vcpkg .
+RUN ./bootstrap-vcpkg.sh -disableMetrics
+ENV VCPKG_ROOT=/vcpkg
+# /mnt/vcpkg-cache must be provided by the Docker host
+ENV VCPKG_DEFAULT_BINARY_CACHE=/mnt/vcpkg-cache
+ENV PATH="${VCPKG_ROOT}:${PATH}"
