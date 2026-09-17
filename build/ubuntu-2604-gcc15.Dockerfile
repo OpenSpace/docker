@@ -1,77 +1,25 @@
 FROM ubuntu:26.04
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt update
+RUN apt-get update
 
 # Set up the compiler
-RUN apt install -y cmake
-RUN apt install -y build-essential
-RUN apt install -y git
-RUN apt install -y ninja-build
+RUN apt-get install -y cmake build-essential git ninja-build
 
 # Set up vcpkg
-RUN apt install -y curl
-RUN apt install -y zip
-RUN apt install -y unzip
-RUN apt install -y autoconf
-RUN apt install -y autoconf-archive
-RUN apt install -y automake
-RUN apt install -y libtool
+RUN apt-get install -y curl zip unzip autoconf autoconf-archive automake libtool python3 bison flex pkg-config
 
 # Prepare vcpkg
 RUN git clone https://github.com/microsoft/vcpkg /vcpkg
 RUN /vcpkg/bootstrap-vcpkg.sh -disableMetrics
 ENV VCPKG_ROOT=/vcpkg
-# /mnt/vcpkg-cache must be provided by the Docker host
-ENV VCPKG_DEFAULT_BINARY_CACHE=/mnt/vcpkg-cache
 ENV PATH="${VCPKG_ROOT}:${PATH}"
+ENV VCPKG_DISABLE_METRICS=1
 
-# Install the remaining OpenSpace dependencies
-RUN apt-get install -y pkg-config
-RUN apt-get install -y '^libxcb.*-dev'
-RUN apt-get install -y libx11-xcb-dev
-RUN apt-get install -y libglu1-mesa-dev
-RUN apt-get install -y libxrender-dev
-RUN apt-get install -y libxi-dev
-RUN apt-get install -y libxkbcommon-dev
-RUN apt-get install -y libxkbcommon-x11-dev
-RUN apt-get install -y libwayland-dev
-RUN apt-get install -y wayland-protocols
-RUN apt-get install -y libx11-dev
-RUN apt-get install -y libx11-xcb-dev
-RUN apt-get install -y libxext-dev
-RUN apt-get install -y libxfixes-dev
-RUN apt-get install -y libxi-dev
-RUN apt-get install -y libxrender-dev
-RUN apt-get install -y libxcb1-dev
-RUN apt-get install -y libxcb-glx0-dev
-RUN apt-get install -y libxcb-keysyms1-dev
-RUN apt-get install -y libxcb-image0-dev
-RUN apt-get install -y libxcb-shm0-dev
-RUN apt-get install -y libxcb-icccm4-dev
-RUN apt-get install -y libxcb-sync-dev
-RUN apt-get install -y libxcb-xfixes0-dev
-RUN apt-get install -y libxcb-shape0-dev
-RUN apt-get install -y libxcb-randr0-dev
-RUN apt-get install -y libxcb-render-util0-dev
-RUN apt-get install -y libxcb-util-dev
-RUN apt-get install -y libxcb-xinerama0-dev
-RUN apt-get install -y libxcb-xkb-dev
-RUN apt-get install -y libxcb-cursor-dev
-RUN apt-get install -y libegl1-mesa-dev
-RUN apt-get install -y libgl1-mesa-dev
-RUN apt-get install -y libdbus-1-dev
-RUN apt-get install -y libatspi2.0-dev
-RUN apt-get install -y libxrandr-dev
-RUN apt-get install -y libxxf86vm-dev
-RUN apt-get install -y libxinerama-dev
-RUN apt-get install -y libxcursor-dev
-RUN apt-get install -y xorg-dev
-RUN apt-get install -y libmpv-dev
-RUN apt-get install -y libnss3
-RUN apt-get install -y libnspr4
-RUN apt install -y xvfb
+# Install OpenSpace dependencies
+RUN apt-get install -y libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev wayland-protocols libx11-dev libx11-xcb-dev libxext-dev libxfixes-dev libxi-dev libxrender-dev libxcb1-dev libxcb-glx0-dev libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-xinput-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-util-dev libxcb-xinerama0-dev libxcb-xkb-dev libxcb-cursor-dev libegl-dev libgl-dev libdbus-1-dev libatspi2.0-dev libxrandr-dev libxxf86vm-dev libxinerama-dev libxcursor-dev xorg-dev libmpv-dev libnss3 libnspr4 xvfb libgl1-mesa-dri
 
-# Setting up the enviroment so that we can quickly build OpenSpace from the container
+# Setting up the environment so that we can quickly build OpenSpace from the container
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
-COPY data/build.sh /
+COPY --chmod=755 data/build.sh /
 WORKDIR "/"

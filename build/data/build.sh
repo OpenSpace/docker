@@ -1,22 +1,18 @@
 #!/bin/bash
 
-# A shell script that will perform a build. It has to optional arguments:
-#   0: The branch to build (defaults to "master")
-#   1: The repository to build (defaults to "https://github.com/OpenSpace/OpenSpace")
+# A shell script that will perform a build. It has an optional arguments to determine the branch.
 
-args_array=("$@")
-if [ ${#args_array[@]} -eq 0 ]; then
-  args_array+=("master")
+if [ $# -gt 1 ]; then
+  echo "Usage: $0 [branch]" >&2
+  exit 1
 fi
 
-if [ ${#args_array[@]} -eq 1 ]; then
-  args_array+=("https://github.com/OpenSpace/OpenSpace")
-fi
+branch="${1:-master}"
 
 # Clone the Git repository with 8 threads. We also only want the most recent commit
-git clone --recursive --jobs 8 --depth 1 --branch "${args_array[0]}" https://github.com/OpenSpace/OpenSpace
-cd OpenSpace && mkdir build
+git clone --recursive --jobs 8 --depth 1 --shallow-submodules --branch "$branch" https://github.com/OpenSpace/OpenSpace
+cd OpenSpace
 
 # Build
-cmake -S . -B ./build
-cmake --build build --parallel 8
+cmake --preset linux-ninja-debug
+cmake --build --preset linux-ninja-debug
