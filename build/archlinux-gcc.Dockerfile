@@ -26,8 +26,10 @@ ENV PATH="${VCPKG_ROOT}:${PATH}"
 ENV VCPKG_DISABLE_METRICS=1
 
 # Install the remaining OpenSpace dependencies. Arch ships headers in the main package,
-# so there are no separate -devel/-dev packages to install here.
-RUN pacman -Syu --noconfirm --needed perl mesa glu libglvnd libxcb xcb-util xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xcb-util-cursor libxrender libxi libxkbcommon libxkbcommon-x11 fontconfig freetype2 wayland wayland-protocols libxxf86vm libxrandr libxfixes libxcomposite libxdamage libxss libxinerama libxcursor libx11 libxext xorgproto vulkan-headers mpv dbus at-spi2-core nss nspr xorg-server-xvfb && pacman -Scc --noconfirm && rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
+# so there are no separate -devel/-dev packages to install here. libcups is in here for CEF,
+# whose libcef.so links against libcups.so.2; the other distributions pull that in through
+# their desktop stacks, but on Arch nothing else in this list depends on it.
+RUN pacman -Syu --noconfirm --needed perl mesa glu libglvnd libxcb xcb-util xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xcb-util-cursor libxrender libxi libxkbcommon libxkbcommon-x11 fontconfig freetype2 wayland wayland-protocols libxxf86vm libxrandr libxfixes libxcomposite libxdamage libxss libxinerama libxcursor libx11 libxext xorgproto vulkan-headers mpv dbus at-spi2-core nss nspr libcups xorg-server-xvfb && pacman -Scc --noconfirm && rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
 
 # Setting up the environment so that we can quickly build OpenSpace from the container
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
