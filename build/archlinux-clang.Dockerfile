@@ -6,7 +6,7 @@ FROM archlinux:base
 RUN pacman -Syu --noconfirm --needed base-devel cmake git ninja && pacman -Scc --noconfirm && rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
 
 # Set up vcpkg
-RUN pacman -Syu --noconfirm --needed curl zip unzip tar autoconf-archive python perl && pacman -Scc --noconfirm && rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
+RUN pacman -Syu --noconfirm --needed curl zip unzip tar autoconf-archive python perl rpm-tools dpkg && pacman -Scc --noconfirm && rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
 
 # Prepare vcpkg. VCPKG_COMMIT is the "default-registry" baseline from OpenSpace's
 # vcpkg.json. vcpkg can only resolve a baseline that exists in this checkout, so a
@@ -44,3 +44,4 @@ RUN pacman -Syu --noconfirm --needed perl mesa glu libglvnd libxcb xcb-util xcb-
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY --chmod=755 data/build.sh /
 WORKDIR "/"
+

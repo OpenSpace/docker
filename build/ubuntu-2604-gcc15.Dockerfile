@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y cmake build-essential git ninja-build && rm -rf /var/lib/apt/lists/*
 
 # Set up vcpkg
-RUN apt-get update && apt-get install -y curl zip unzip autoconf autoconf-archive automake libtool python3 bison flex pkg-config && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl zip unzip autoconf autoconf-archive automake libtool python3 bison flex pkg-config zip rpm dpkg && rm -rf /var/lib/apt/lists/*
 
 # Prepare vcpkg. VCPKG_COMMIT is the "default-registry" baseline from OpenSpace's vcpkg.json
 # When OpenSpace moves its baseline, either rebuild with
@@ -29,3 +29,4 @@ RUN apt-get update && apt-get install -y perl libx11-xcb-dev libglu1-mesa-dev li
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY --chmod=755 data/build.sh /
 WORKDIR "/"
+

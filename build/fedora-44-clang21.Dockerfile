@@ -4,7 +4,7 @@ FROM fedora:44
 RUN dnf install -y cmake gcc gcc-c++ git ninja-build && dnf clean all
 
 # Set up vcpkg
-RUN dnf install -y curl zip unzip autoconf autoconf-archive automake libtool python3 bison flex pkg-config && dnf clean all
+RUN dnf install -y curl zip unzip autoconf autoconf-archive automake libtool python3 bison flex pkg-config rpm-build dpkg && dnf clean all
 
 # Prepare vcpkg. VCPKG_COMMIT is the "default-registry" baseline from OpenSpace's vcpkg.json
 # When OpenSpace moves its baseline, either rebuild with
@@ -37,3 +37,4 @@ RUN dnf install -y perl-core mesa-libGL-devel mesa-libGLU-devel libglvnd-devel l
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY --chmod=755 data/build.sh /
 WORKDIR "/"
+
