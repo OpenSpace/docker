@@ -25,8 +25,17 @@ ENV VCPKG_DISABLE_METRICS=1
 # Install OpenSpace dependencies
 RUN apt-get update && apt-get install -y perl libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev wayland-protocols libx11-dev libxext-dev libxfixes-dev libxcb1-dev libxcb-glx0-dev libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-xinput-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-util-dev libxcb-xinerama0-dev libxcb-xkb-dev libxcb-cursor-dev libegl-dev libgl-dev libdbus-1-dev libatspi2.0-dev libxrandr-dev libxxf86vm-dev libxinerama-dev libxcursor-dev libmpv-dev libnss3 libnspr4 xvfb libgl1-mesa-dri && rm -rf /var/lib/apt/lists/*
 
+# Install AppImage packaging tools. support/cmake/packaging.cmake locates these via
+# find_program() on PATH, and support/cmake/appimage.cmake uses them to build the AppImage
+# during `cpack --preset linux-appimage`. linuxdeploy and its Qt plugin only ever publish
+# a rolling "continuous" release; appimagetool has real version tags, so the "latest"
+# redirect is used for it instead so this doesn't need to be re-pinned.
+RUN curl -fL --retry 3 -o /usr/local/bin/linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && \
+    curl -fL --retry 3 -o /usr/local/bin/linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage && \
+    curl -fL --retry 3 -o /usr/local/bin/appimagetool https://github.com/AppImage/appimagetool/releases/latest/download/appimagetool-x86_64.AppImage && \
+    chmod +x /usr/local/bin/linuxdeploy /usr/local/bin/linuxdeploy-plugin-qt /usr/local/bin/appimagetool
+
 # Setting up the environment so that we can quickly build OpenSpace from the container
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY --chmod=755 data/build.sh /
 WORKDIR "/"
-

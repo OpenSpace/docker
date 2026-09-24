@@ -40,8 +40,17 @@ ENV CXX=/usr/bin/clang++
 # their desktop stacks, but on Arch nothing else in this list depends on it.
 RUN pacman -Syu --noconfirm --needed perl mesa glu libglvnd libxcb xcb-util xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xcb-util-cursor libxrender libxi libxkbcommon libxkbcommon-x11 fontconfig freetype2 wayland wayland-protocols libxxf86vm libxrandr libxfixes libxcomposite libxdamage libxss libxinerama libxcursor libx11 libxext xorgproto vulkan-headers mpv dbus at-spi2-core nss nspr libcups xorg-server-xvfb && pacman -Scc --noconfirm && rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
 
+# Install AppImage packaging tools. support/cmake/packaging.cmake locates these via
+# find_program() on PATH, and support/cmake/appimage.cmake uses them to build the AppImage
+# during `cpack --preset linux-appimage`. linuxdeploy and its Qt plugin only ever publish
+# a rolling "continuous" release; appimagetool has real version tags, so the "latest"
+# redirect is used for it instead so this doesn't need to be re-pinned.
+RUN curl -fL --retry 3 -o /usr/local/bin/linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && \
+    curl -fL --retry 3 -o /usr/local/bin/linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage && \
+    curl -fL --retry 3 -o /usr/local/bin/appimagetool https://github.com/AppImage/appimagetool/releases/latest/download/appimagetool-x86_64.AppImage && \
+    chmod +x /usr/local/bin/linuxdeploy /usr/local/bin/linuxdeploy-plugin-qt /usr/local/bin/appimagetool
+
 # Setting up the environment so that we can quickly build OpenSpace from the container
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY --chmod=755 data/build.sh /
 WORKDIR "/"
-

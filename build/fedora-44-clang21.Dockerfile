@@ -33,8 +33,17 @@ ENV CXX=/usr/bin/clang++
 # Install the remaining OpenSpace dependencies
 RUN dnf install -y perl-core mesa-libGL-devel mesa-libGLU-devel libglvnd-devel libxcb-devel xcb-util-devel xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel xcb-util-wm-devel xcb-util-cursor-devel libX11-xcb libXrender-devel libXi-devel libxkbcommon-devel libxkbcommon-x11-devel mesa-libEGL-devel fontconfig-devel freetype-devel wayland-devel wayland-protocols-devel libwayland-client libwayland-cursor libwayland-egl libXxf86vm-devel libXrandr-devel libXfixes-devel libXcomposite-devel libXdamage-devel libXScrnSaver-devel libXinerama-devel libXcursor-devel libX11-devel mpv-devel mesa-dri-drivers xorg-x11-server-Xvfb && dnf clean all
 
+# Install AppImage packaging tools. support/cmake/packaging.cmake locates these via
+# find_program() on PATH, and support/cmake/appimage.cmake uses them to build the AppImage
+# during `cpack --preset linux-appimage`. linuxdeploy and its Qt plugin only ever publish
+# a rolling "continuous" release; appimagetool has real version tags, so the "latest"
+# redirect is used for it instead so this doesn't need to be re-pinned.
+RUN curl -fL --retry 3 -o /usr/local/bin/linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && \
+    curl -fL --retry 3 -o /usr/local/bin/linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage && \
+    curl -fL --retry 3 -o /usr/local/bin/appimagetool https://github.com/AppImage/appimagetool/releases/latest/download/appimagetool-x86_64.AppImage && \
+    chmod +x /usr/local/bin/linuxdeploy /usr/local/bin/linuxdeploy-plugin-qt /usr/local/bin/appimagetool
+
 # Setting up the environment so that we can quickly build OpenSpace from the container
 ENV CMAKE_EXPORT_COMPILE_COMMANDS=1
 COPY --chmod=755 data/build.sh /
 WORKDIR "/"
-
